@@ -1,0 +1,32 @@
+# CI mínima (no existía ninguna en el repositorio). Sin modelos grandes ni videos sensibles.
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m ruff check src tests
+      - run: python -m ruff format --check src
+      - run: python -m mypy
+      - run: python -m pytest tests/unit -q
+      - run: python -m pytest tests/integration tests/ui -q --cov=analizador_video --cov-report=xml
+        env: { QT_QPA_PLATFORM: offscreen }
+      - uses: actions/upload-artifact@v4
+        with: { name: coverage, path: coverage.xml }
+  package:
+    needs: test
+    runs-on: windows-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m PyInstaller --noconfirm --clean packaging/pyinstaller/analizador_video.spec
+      - run: python scripts/smoke_frozen.py
+      - uses: actions/upload-artifact@v4
+        with: { name: AnalizadorVideo-portable, path: dist/AnalizadorVideo, retention-days: 14 }

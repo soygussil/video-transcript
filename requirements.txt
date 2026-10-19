@@ -1,0 +1,3 @@
+# Compatibilidad: la fuente de verdad es pyproject.toml.
+# Instalación recomendada:  pip install -e ".[whisper,openvino]"   (GPU Arc / NPU Intel; agrega ,ocr para EasyOCR en CPU)
+-e .[whisper,openvino]

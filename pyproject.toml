@@ -1,0 +1,82 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analizador-video"
+dynamic = ["version"]
+description = "Aplicación de escritorio local para analizar videos: capturas, transcripción, OCR y reportes."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "opencv-python-headless>=4.10,<5",
+    "numpy>=1.26,<3",
+    "Pillow>=10,<13",
+    "PyYAML>=6,<7",
+    "python-docx>=1.1,<2",
+    "openpyxl>=3.1,<4",
+    "psutil>=5.9,<8",
+    "av>=12",
+    "PySide6-Essentials>=6.6,<7",
+]
+
+[project.optional-dependencies]
+ocr = ["easyocr>=1.7,<2"]
+whisper = ["faster-whisper>=1.1,<2"]
+openvino = ["openvino>=2024.4", "openvino-genai>=2024.4", "rapidocr>=3.4,<4", "huggingface_hub>=0.24"]
+dev = ["pytest>=8,<10", "pytest-cov>=5", "pytest-qt>=4.4", "ruff>=0.6", "mypy>=1.10", "types-PyYAML",
+       "pyinstaller>=6.6", "pre-commit>=3.7"]
+
+[project.scripts]
+analizador-video = "analizador_video.cli.commands:main"
+
+[project.gui-scripts]
+analizador-video-gui = "analizador_video.ui.app:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "analizador_video.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["analizador_video*"]
+
+[tool.setuptools.package-data]
+analizador_video = ["config/*.yaml", "ui/resources/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+markers = [
+    "benchmark: modelos y hardware reales (suite separada; no se ejecuta por defecto)",
+    "ui: pruebas de interfaz con pytest-qt",
+]
+addopts = "-m 'not benchmark'"
+qt_api = "pyside6"
+
+[tool.coverage.run]
+source = ["analizador_video"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I", "UP", "SIM", "RUF"]
+ignore = ["RUF001", "RUF002", "RUF003", "SIM105", "SIM113"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["analizador_video"]
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = ["cv2.*", "docx.*", "openpyxl.*", "easyocr.*", "faster_whisper.*", "openvino.*", "openvino_genai.*",
+          "psutil.*"]
+ignore_missing_imports = true

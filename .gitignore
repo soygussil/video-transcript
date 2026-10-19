@@ -1,0 +1,37 @@
+# Entornos virtuales (nunca versionar site-packages; recrear con scripts/instalar_windows.ps1)
+.venv/
+venv/
+env/
+Lib/
+Include/
+Scripts/
+pyvenv.cfg
+share/
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+# Datos de usuario y artefactos generados
+salida/
+videos/
+Proyectos/
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.vtt
+*.srt
+modelos/
+*.bin
+*.onnx
+# Secretos
+.env
+# Empaquetado
+build/
+dist/

@@ -1,0 +1,50 @@
+# Configuración predeterminada (fuente única de valores). Versión del esquema: 2.
+# Los perfiles sólo sobrescriben claves de estas secciones. Valores iniciales sujetos a benchmark.
+version: 2
+video:
+  muestreo_seg: 1.0
+  ancho_miniatura: 320
+  alto_miniatura: 180
+  umbral_pixel: 0.06
+  umbral_cambio: 0.03
+  umbral_estable: 0.012
+  espera_max_estable_seg: 4.0
+  separacion_minima_seg: 2.0
+  captura_periodica_seg: 0
+  ancho_salida: 1280
+  calidad_jpg: 88
+transcript:
+  automatica: true
+  backend: auto
+  modelo_whisper: small
+  idioma: es
+  dispositivo: auto
+  fallback_cpu: true
+  bloque_minutos: 15
+  unir_mismo_hablante_seg: 1.5
+ocr:
+  activo: true
+  idiomas: [es, en]
+  confianza_minima: 0.35
+  dispositivo: auto
+  guardar_cada: 10
+  reintentos: 1
+  max_errores_consecutivos: 5
+  preprocesamiento: []
+reporte:
+  titulo: Análisis funcional de video
+  confidencialidad: Información confidencial. Uso interno.
+  encabezado: ""
+  pie: ""
+  formatos: [word, excel, json, txt, srt]
+modelos:
+  permitir_descarga: false
+perfiles:
+  rapido:
+    video: {muestreo_seg: 2.0, umbral_cambio: 0.05, separacion_minima_seg: 3.0}
+    transcript: {modelo_whisper: base}
+  balanceado: {}
+  maxima_precision:
+    video: {muestreo_seg: 0.5, umbral_cambio: 0.02, separacion_minima_seg: 1.0, espera_max_estable_seg: 6.0}
+    transcript: {modelo_whisper: medium}
+    ocr: {confianza_minima: 0.25, preprocesamiento: [escala_grises, contraste]}

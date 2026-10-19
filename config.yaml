@@ -1,0 +1,8 @@
+# Configuración opcional (formato v2). La app funciona sin este archivo: los valores
+# predeterminados viven en src/analizador_video/config/default_config.yaml.
+# Úsalo con:  analizador-video analizar VIDEO --config config.yaml
+# Sólo incluye las claves que quieras cambiar. El config.yaml original (v1) también se acepta.
+version: 2
+reporte:
+  titulo: Análisis funcional de video
+  confidencialidad: Información confidencial. Uso interno.
