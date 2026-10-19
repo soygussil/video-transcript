@@ -58,7 +58,7 @@ def _install_device_session(device_name: str) -> None:
             self.model = core.read_model(model_path)
             self.session = core.compile_model(model=self.model, device_name=device_name).create_infer_request()
 
-    engine_module.OpenVINOInferSession = DeviceSession  # get_engine() lo importa en cada construcción
+    engine_module.OpenVINOInferSession = DeviceSession  # type: ignore[misc]  # get_engine() lo importa en cada construcción
 
 
 class _OpenVinoOcrReader:
