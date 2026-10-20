@@ -28,7 +28,7 @@ if ($huella -ne $previa) {
 
 if (-not (Test-Path $marcaModelos)) {
     Write-Host "Descargando modelos de OCR y Whisper (una sola vez)..."
-    & .\.venv\Scripts\analizador-video.exe modelos descargar --ocr-openvino --whisper-openvino small
+    & .\.venv\Scripts\analizador-video.exe modelos descargar --ocr-openvino --whisper-openvino small --si
     if ($LASTEXITCODE -eq 0) { Set-Content $marcaModelos "ok" }
     else { Write-Host "No se pudieron descargar los modelos; se reintentará la próxima vez." }
 }
