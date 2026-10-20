@@ -7,17 +7,35 @@ detecta las pantallas clave, importa o genera la transcripción, reconoce el tex
 **Todo se procesa en el equipo.** No hay telemetría, no se envía contenido a la nube y la aplicación funciona
 sin Azure OpenAI, OpenAI ni ningún otro LLM.
 
-## Instalación (desarrollo)
+## Instalación y arranque con un clic
 
-Requisitos: Windows 10/11, Python 3.11–3.13. FFmpeg sólo es necesario para la transcripción automática.
+Requisitos: Windows 10/11, Python 3.11–3.13 (python.org; 3.14 aún no) y Git. Internet sólo la primera vez.
+
+**En otro equipo, desde PowerShell** (clona, instala lo que falte y abre la app):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1            # CPU
-powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1 -ConOpenVino  # + GPU/NPU Intel (opcional)
-.\.venv\Scripts\analizador-video-gui.exe
+git clone https://github.com/soygussil/video-transcript.git; cd video-transcript; .\Iniciar.bat
 ```
 
-`instalar_windows.bat` sigue funcionando y llama al script anterior.
+`Iniciar.bat` (doble clic) crea el entorno `.venv`, instala las dependencias (incluye OpenVINO para la GPU Arc
+y el NPU Intel AI Boost), descarga los modelos de OCR y Whisper y abre la aplicación. **Sólo lo hace la primera
+vez**: después abre directo; reinstala únicamente si cambia `pyproject.toml` y reintenta los modelos si su
+descarga falló.
+
+Para actualizar un equipo ya instalado: `git pull` y `.\Iniciar.bat`.
+
+Recomendado la primera vez: **Diagnóstico → Probar compatibilidad**, para que el modo Automático use la GPU o
+el NPU sólo donde de verdad funcionan.
+
+### Instalación manual (desarrollo)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1                # whisper + openvino + dev
+powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1 -SinOpenVino   # sólo CPU
+.\.venv\Scriptsnalizador-video-gui.exe
+```
+
+FFmpeg ya no es necesario: el audio se extrae con PyAV.
 
 ## Uso con la interfaz
 
@@ -41,7 +59,7 @@ analizador-video continuar sesion
 analizador-video exportar sesion --formatos word,excel --sin-datos-sensibles
 analizador-video diagnostico --probar --modelos small
 analizador-video modelos listar
-analizador-video modelos descargar --ocr --whisper small     # pide confirmación
+analizador-video modelos descargar --ocr-openvino --whisper-openvino small   # pide confirmación
 analizador-video importar-legado salida\sesion --video "C:\Videos\sesion.mp4"
 analizador-video gui
 ```
@@ -106,7 +124,7 @@ y los perfiles viven en `src/analizador_video/config/default_config.yaml`; todo 
 | Mensaje | Qué hacer |
 |---|---|
 | No se encontró FFmpeg | Instala FFmpeg y agrégalo al PATH, o usa un VTT/SRT. |
-| Modelos de OCR / transcripción no descargados | `analizador-video modelos descargar --ocr --whisper small` |
+| Modelos de OCR / transcripción no descargados | `analizador-video modelos descargar --ocr-openvino --whisper-openvino small` |
 | El video original ya no está en su ubicación | Restáuralo o crea el proyecto con «Copiar el video». |
 | GPU/NPU «No verificado» | Diagnóstico → Probar compatibilidad. |
 
