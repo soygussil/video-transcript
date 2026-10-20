@@ -2,11 +2,11 @@
 .venv/
 venv/
 env/
-Lib/
-Include/
-Scripts/
+/Lib/
+/Include/
+/Scripts/
 pyvenv.cfg
-share/
+/share/
 # Python
 __pycache__/
 *.py[cod]
