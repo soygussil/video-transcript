@@ -17,6 +17,12 @@ Requisitos: Windows 10/11, Python 3.11–3.13 (python.org; 3.14 aún no) y Git. 
 git clone https://github.com/soygussil/video-transcript.git; cd video-transcript; .\Iniciar.bat
 ```
 
+**Sin Git** (descarga el ZIP del repositorio):
+
+```powershell
+cd $HOME\Downloads; Invoke-WebRequest https://github.com/soygussil/video-transcript/archive/refs/heads/main.zip -OutFile vt.zip; Expand-Archive vt.zip -DestinationPath . -Force; cd video-transcript-main; .\Iniciar.bat
+```
+
 `Iniciar.bat` (doble clic) crea el entorno `.venv`, instala las dependencias (incluye OpenVINO para la GPU Arc
 y el NPU Intel AI Boost), descarga los modelos de OCR y Whisper y abre la aplicación. **Sólo lo hace la primera
 vez**: después abre directo; reinstala únicamente si cambia `pyproject.toml` y reintenta los modelos si su
