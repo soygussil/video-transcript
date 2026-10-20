@@ -23,8 +23,10 @@ from PySide6.QtWidgets import (
 from analizador_video.application.project_service import ProjectService
 from analizador_video.domain.enums import ProfileName, SourceMode
 from analizador_video.domain.validation import VIDEO_EXTENSIONS
+from analizador_video.infrastructure.video.region import Region
 from analizador_video.ui import strings as T
 from analizador_video.ui.widgets.common import DropZone, MessageBanner, label
+from analizador_video.ui.widgets.region_dialog import RegionDialog
 
 
 class HomePage(QWidget):
@@ -44,6 +46,7 @@ class HomePage(QWidget):
         self.service = service
         self.video: Path | None = None
         self.transcript: Path | None = None
+        self.region = Region()
         root = QVBoxLayout(self)
         root.setContentsMargins(28, 24, 28, 24)
         root.setSpacing(14)
@@ -68,6 +71,15 @@ class HomePage(QWidget):
         root.addLayout(buttons)
         self.transcript_label = label(T.TRANSCRIPT_NONE, "Muted")
         root.addWidget(self.transcript_label)
+
+        area = QHBoxLayout()
+        self.select_region = QPushButton(T.REGION_BUTTON)
+        self.select_region.setEnabled(False)
+        self.select_region.clicked.connect(self.choose_region)
+        self.region_label = label(T.REGION_FULL_LABEL, "Muted")
+        area.addWidget(self.select_region)
+        area.addWidget(self.region_label, 1)
+        root.addLayout(area)
 
         box = QFrame()
         box.setObjectName("Card")
@@ -137,7 +149,22 @@ class HomePage(QWidget):
         if path:
             self.set_transcript(Path(path))
 
+    def choose_region(self) -> None:
+        if self.video is None:
+            return
+        dialog = RegionDialog(self.video, self.region, self)
+        if dialog.exec() == RegionDialog.DialogCode.Accepted:
+            self._set_region(dialog.region())
+
+    def _set_region(self, region: Region) -> None:
+        self.region = region
+        self.region_label.setText(
+            T.REGION_FULL_LABEL if region.is_full else T.REGION_CUSTOM_LABEL.format(w=region.w, h=region.h)
+        )
+
     def set_video(self, path: Path) -> None:
+        if path != self.video:
+            self._set_region(Region())  # el área elegida pertenece al video anterior
         self.video = path
         self.drop.set_selected(path)
         self.refresh_validation()
@@ -149,6 +176,7 @@ class HomePage(QWidget):
         self.refresh_validation()
 
     def refresh_validation(self) -> None:
+        self.select_region.setEnabled(self.video is not None)
         if self.video is None:
             self.validation.hide()
             self.ok_label.setText("")

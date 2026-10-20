@@ -47,6 +47,9 @@ FFmpeg ya no es necesario: el audio se extrae con PyAV.
 
 1. **Inicio**: arrastra el video (o `Ctrl+O`), agrega opcionalmente un VTT/SRT, elige el perfil y presiona
    **Analizar video**. La validación aparece antes de empezar.
+   Con **Elegir área de captura…** abres una vista previa del video (con control de «momento»), dibujas el
+   rectángulo y lo mueves o estiras por bordes y esquinas. Sólo esa zona se usa para detectar pantallas, guardar
+   capturas y hacer OCR (útil para ignorar barras, cámara o chat). El área queda guardada en el proyecto.
 2. **Procesamiento**: progreso por etapa, dispositivo usado, advertencias y **Cancelar análisis**. El avance
    se guarda continuamente; si cierras la aplicación, puedes continuar después.
 3. **Proyecto**: capturas, estado de cada etapa y exportación (Word, Excel, JSON, TXT, SRT) sin reprocesar.

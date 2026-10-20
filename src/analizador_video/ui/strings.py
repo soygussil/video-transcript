@@ -160,3 +160,20 @@ CLOSE_RUNNING: Final = (
 DETAILS_SHOW: Final = "Ver detalles técnicos"
 DETAILS_HIDE: Final = "Ocultar detalles técnicos"
 SAVED_YES: Final = "El avance quedó guardado."
+
+REGION_BUTTON: Final = "Elegir área de captura…"
+REGION_FULL_LABEL: Final = "Área de captura: pantalla completa"
+REGION_CUSTOM_LABEL: Final = "Área de captura: recortada ({w:.0%} × {h:.0%} del video)"
+REGION_TITLE: Final = "Área de captura"
+REGION_HELP: Final = (
+    "Arrastra sobre la imagen para dibujar el área; mueve el rectángulo o estira sus bordes y esquinas. "
+    "Sólo esa zona se usará para detectar pantallas, guardar capturas y leer el texto (OCR)."
+)
+REGION_MOMENT: Final = "Momento del video"
+REGION_FULL: Final = "Pantalla completa"
+REGION_USE: Final = "Usar esta área"
+REGION_CANCEL: Final = "Cancelar"
+REGION_INFO: Final = "Área seleccionada: {w:.0%} de ancho × {h:.0%} de alto del video."
+REGION_INFO_FULL: Final = "Se capturará la pantalla completa."
+REGION_NO_PREVIEW: Final = "No se pudo leer una vista previa del video."
+REGION_ACCESSIBLE: Final = "Vista previa del video con el área de captura. Arrastra para dibujarla o redimensionarla."

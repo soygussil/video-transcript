@@ -138,3 +138,20 @@ def test_sanitize_secrets(raw, leak):
 
 def test_sanitize_home_path():
     assert str(Path.home()) not in sanitize(f"Error en {Path.home()}/Videos/demo.mp4")
+
+
+def test_region_crop_save_and_load(tmp_path):
+    import numpy as np
+
+    from analizador_video.infrastructure.video.region import Region, load_region, save_region
+
+    frame = np.zeros((100, 200, 3), dtype=np.uint8)
+    assert Region().crop(frame) is frame
+    region = Region(0.5, 0.25, 0.5, 0.5)
+    assert region.crop(frame).shape[:2] == (50, 100)
+    save_region(tmp_path, region)
+    assert load_region(tmp_path) == region
+    save_region(tmp_path, Region())  # pantalla completa: se elimina el archivo
+    assert load_region(tmp_path).is_full and not (tmp_path / "region.json").exists()
+    (tmp_path / "region.json").write_text("no es json")
+    assert load_region(tmp_path).is_full

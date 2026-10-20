@@ -27,6 +27,7 @@ from analizador_video.application.project_service import CreateProjectRequest, P
 from analizador_video.domain.enums import ProfileName, SourceMode, StageName
 from analizador_video.domain.errors import AppError, UserMessage
 from analizador_video.infrastructure.preferences import Preferences
+from analizador_video.infrastructure.video.region import save_region
 from analizador_video.ui import strings as T
 from analizador_video.ui.job_controller import JobController
 from analizador_video.ui.pages.diagnostics import DiagnosticsPage
@@ -205,6 +206,7 @@ class MainWindow(QMainWindow):
         except AppError as error:
             self.banner.show_message(error.message)
             return
+        save_region(project.root, self.home.region)
         self.preferences.profile, self.preferences.copy_video = profile, copy_video
         self.preferences.device = self.home.selected_device()
         self._save_preferences()

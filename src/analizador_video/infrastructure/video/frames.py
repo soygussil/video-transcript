@@ -19,6 +19,7 @@ import numpy as np
 from analizador_video.config.settings import VideoSettings
 from analizador_video.domain.models import VideoMetadata
 from analizador_video.infrastructure.video.probe import open_capture
+from analizador_video.infrastructure.video.region import Region
 
 Thumb = np.ndarray
 
@@ -144,6 +145,7 @@ def extract_keyframes(
     on_capture: Callable[[DetectedCapture, FrameCheckpoint], None],
     on_progress: Callable[[int, int, FrameCheckpoint], None],
     is_cancelled: Callable[[], bool],
+    region: Region | None = None,
 ) -> FrameCheckpoint:
     """Recorre el video desde `checkpoint.next_index`; se detiene si `is_cancelled()`."""
     step = sample_step(meta.fps, cfg)
@@ -171,6 +173,8 @@ def extract_keyframes(
                 checkpoint.next_index = max(checkpoint.next_index, index)
                 on_progress(total, total, checkpoint)
                 break
+            if region is not None:
+                frame = region.crop(frame)
             accepted = detector.feed(index / meta.fps, frame)
             checkpoint.next_index = index + step
             if accepted is not None:

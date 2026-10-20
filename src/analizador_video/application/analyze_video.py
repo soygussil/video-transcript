@@ -89,6 +89,7 @@ from analizador_video.infrastructure.video.frames import (
     total_samples,
 )
 from analizador_video.infrastructure.video.probe import fingerprint, probe_video
+from analizador_video.infrastructure.video.region import load_region
 
 log = logging.getLogger("analizador_video.engine")
 PROGRESS_EMIT_SECONDS = 0.25
@@ -357,6 +358,9 @@ class AnalyzeVideo:
         last_thumb = thumb_from_jpeg(project.root / captures[-1].file_rel, cfg) if captures else None
         total = total_samples(meta, cfg)
         step = sample_step(meta.fps, cfg)
+        region = load_region(project.root)
+        if not region.is_full:
+            ctx.emit(LogLine(f"Área de captura: {region.w:.0%} x {region.h:.0%} del video."))
         if checkpoint.next_index:
             ctx.emit(LogLine(f"Reanudando la detección de pantallas ({checkpoint.captures} capturas guardadas)."))
         ctx.emit(StageStarted(StageName.FRAMES.value, total, "opencv", DeviceKind.CPU.value))
@@ -397,6 +401,7 @@ class AnalyzeVideo:
             on_capture,
             on_progress,
             ctx.cancel.is_cancelled,
+            region,
         )
         state.checkpoint = final.to_dict()
         ctx.repo.save_stage(state)

@@ -250,3 +250,46 @@ def test_drop_zone_keyboard_and_accessibility(window, qtbot):
     win.home.drop.setFocus()
     qtbot.keyClick(win.home.drop, Qt.Key.Key_Return)
     assert called and win.home.drop.accessibleName() == T.DROP_ACCESSIBLE
+
+
+def test_region_selector_drag_and_resize(qtbot):
+    import numpy as np
+    from PySide6.QtCore import QPointF
+
+    from analizador_video.infrastructure.video.region import Region
+    from analizador_video.ui.widgets.region_dialog import RegionSelector
+
+    selector = RegionSelector(Region(0.25, 0.25, 0.5, 0.5))
+    qtbot.addWidget(selector)
+    selector.resize(800, 450)
+    selector.set_frame(np.zeros((450, 800, 3), dtype=np.uint8))
+    selector.show()
+    rect = selector._region_rect()
+    # Estirar el borde derecho 100 px hacia la derecha: el ancho crece 100/800.
+    selector.mousePressEvent(_mouse(rect.right(), rect.center().y()))
+    selector.mouseMoveEvent(_mouse(rect.right() + 100, rect.center().y()))
+    selector.mouseReleaseEvent(_mouse(rect.right() + 100, rect.center().y()))
+    assert selector.region.w == pytest.approx(0.625, abs=0.01) and selector.region.x == pytest.approx(0.25)
+    # Mover el rectángulo no puede salirse del video.
+    inner = selector._region_rect().center()
+    selector.mousePressEvent(_mouse(inner.x(), inner.y()))
+    selector.mouseMoveEvent(_mouse(inner.x() + 5000, inner.y() + 5000))
+    selector.mouseReleaseEvent(_mouse(inner.x() + 5000, inner.y() + 5000))
+    r = selector.region
+    assert r.x + r.w == pytest.approx(1.0) and r.y + r.h == pytest.approx(1.0)
+    assert isinstance(QPointF(), QPointF)
+
+
+def _mouse(x: float, y: float):
+    from PySide6.QtCore import QEvent, QPointF
+    from PySide6.QtGui import QMouseEvent
+
+    pos = QPointF(x, y)
+    return QMouseEvent(
+        QEvent.Type.MouseButtonPress,
+        pos,
+        pos,
+        Qt.MouseButton.LeftButton,
+        Qt.MouseButton.LeftButton,
+        Qt.KeyboardModifier.NoModifier,
+    )
