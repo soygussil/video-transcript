@@ -32,7 +32,7 @@ el NPU sólo donde de verdad funcionan.
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1                # whisper + openvino + dev
 powershell -ExecutionPolicy Bypass -File scripts\instalar_windows.ps1 -SinOpenVino   # sólo CPU
-.\.venv\Scriptsnalizador-video-gui.exe
+.\.venv\Scripts\analizador-video-gui.exe
 ```
 
 FFmpeg ya no es necesario: el audio se extrae con PyAV.
